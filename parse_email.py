@@ -142,9 +142,10 @@ class Mail(object):
         self.conn.logout()
 
     def run(self):
-        self.unseen_mail()
-        #self.all_mail()
-        self.parse()
+        while True:
+            self.unseen_mail()
+            #self.all_mail()
+            self.parse()
         self.over()
 
 
