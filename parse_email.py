@@ -1,26 +1,35 @@
 #!/usr/local/bin/python3
 from pdf2image import convert_from_path,convert_from_bytes
+import wget
 
 from email.header import decode_header
 import imaplib
 import email
+
 import sys
 import os
 import re
+import uuid
 import requests
 from io import BytesIO
 import logging
+import urllib.request
+
 
 
 class Mail(object):
     user = 'invoice@rrs.com'
     password = 'Haier@2018'
     imap = 'imap.exmail.qq.com'
+    #user = '12980829@qq.com'
+    #password = 'xxsjjeacdnfrcahf'
+    #imap = 'imap.qq.com'
 
     def __init__(self):
         self.conn = None
         self.correct_receiver = False
         self.to = None
+        self.send_from = None
         self.unseen = []
         self.all = []
         try:
@@ -31,6 +40,7 @@ class Mail(object):
             sys.exit(1)
         print("登录成功")
         self.conn.select("&UXZO1mWHTvZZOQ-/&kK5O9o9sefs-", readonly=False)
+        #self.conn.select("inbox", readonly=False)
 
     def unseen_mail(self):
         """ 未读邮件 """
@@ -63,6 +73,8 @@ class Mail(object):
             self.to = to.replace('@rrs.com','')
         else:
             self.correct_receiver = False
+        self.correct_receiver = True
+        self.send_from = email.utils.parseaddr(msg['From'])[1]
 
         print("Subject: ", subject)
         print("From: ", email.utils.parseaddr(msg['From'])[1])
@@ -79,6 +91,7 @@ class Mail(object):
 
     def parse_body(self, msg):
         if not self.correct_receiver:
+            print('忽略无关邮件')
             return
 
         for part in msg.walk():
@@ -86,7 +99,8 @@ class Mail(object):
                 charset = part.get_charset()
                 contenttype = part.get_content_type()
                 name = part.get_param("name")
-                if name:
+                filePath = None
+                if name: # 有附件的情况, 优先找附件
                     fh = email.header.Header(name)
                     fdh = email.header.decode_header(fh)
                     fname = fdh[0][0]
@@ -105,22 +119,36 @@ class Mail(object):
 
                     if bool(fileName):
                         filePath = os.path.join('.', 'attachments', fileName)
-                        print(filePath)
-                        fp = open(filePath, 'wb')
-                        fp.write(part.get_payload(decode=True))
-                        fp.close()
-                        image = convert_from_path(filePath)
-                        image[0].save('temp.png')
-                        sfiles={'file': open('temp.png','rb')}
-                        res=requests.post('http://180.76.188.189:8890/api/v1/invoices/invoice/email/qrcode',files=sfiles, data={'mobile': self.to} )
-                        print (res.text)
-                else:
+                    fp = open(filePath, 'wb')
+                    fp.write(part.get_payload(decode=True))
+                    fp.close()
+                else: # 需要在正文找链接下载的情况（比如京东）
                     print('no attachments')
-                    #print(self.parse_part_to_str(part)) # print 邮件正文
+                    if self.send_from == 'customer_service@jd.com':
+                        print('分析京东的邮件，找到发票下载地址')
+                        mail_contents = self.parse_part_to_str(part) # print 邮件正文
+                        print(mail_contents)
+                        m = re.search(r'.*<a href="(.*)">电子普通发票下载</a>.*', mail_contents)
+                        download_url = m.group(1)
+                        print('京东的附件下载地址:' + download_url)
+                        filePath = './attachments/' + str(uuid.uuid1()) + 'jd_attachment.pdf'
+                        #wget.download(download_url, out=filePath)
+                        response = urllib.request.urlopen(download_url)
+                        with open(filePath,'wb') as output:
+                          output.write(response.read())
 
+                if not bool(filePath):
+                    print("没有在正文和附件中找到要分析的内容")
+                    return
+
+                print('pdf file path is:' + filePath)
+                image = convert_from_path(filePath)
+                image[0].save('temp.png')
+                sfiles={'file': open('temp.png','rb')}
+                res=requests.post('http://180.76.188.189:8890/api/v1/invoices/invoice/email/qrcode',files=sfiles, data={'mobile': self.to} )
+                print (res.text)
 
     def parse(self):
-        #nums = self.all[1:3]
         nums = self.unseen
         for num in nums:
             try:
