@@ -1,6 +1,5 @@
 #!/usr/local/bin/python3
 from pdf2image import convert_from_path,convert_from_bytes
-import wget
 
 from email.header import decode_header
 import imaplib
@@ -11,7 +10,6 @@ import os
 import re
 import uuid
 import requests
-from io import BytesIO
 import logging
 import urllib.request
 
@@ -73,7 +71,7 @@ class Mail(object):
             self.to = to.replace('@rrs.com','')
         else:
             self.correct_receiver = False
-        self.correct_receiver = True
+        #self.correct_receiver = True
         self.send_from = email.utils.parseaddr(msg['From'])[1]
 
         print("Subject: ", subject)
@@ -95,6 +93,22 @@ class Mail(object):
             return
 
         for part in msg.walk():
+                #if name:
+                #     fh = email.header.Header(name)
+                #     fdh = email.header.decode_header(fh)
+                #     fname = fdh[0][0]
+                #     print('附件名 before decode:', fname)
+
+                #     fileName = part.get_filename()
+
+                #     try:
+                #         fileName = decode_header(fileName)[0][0].decode(decode_header(fileName)[0][1])
+                #     except:
+                #         print('do not need to decode filename')
+
+                #     print('附件名 afeter decode:', fileName)
+                #     if not fileName.endswith('.pdf'):
+                #         return
             if not part.is_multipart():
                 charset = part.get_charset()
                 contenttype = part.get_content_type()
@@ -106,12 +120,11 @@ class Mail(object):
                     fname = fdh[0][0]
 
                     fileName = part.get_filename()
-                    if not bool(fileName):
-                        continue
+
                     try:
                         fileName = decode_header(fileName)[0][0].decode(decode_header(fileName)[0][1])
                     except:
-                        print('附件' + filename + '有问题')
+                        pass
 
                     print('正在处理附件:', fileName)
                     if not fileName.endswith('.pdf'):
@@ -133,7 +146,6 @@ class Mail(object):
                         download_url = m.group(1)
                         print('京东的附件下载地址:' + download_url)
                         filePath = './attachments/' + str(uuid.uuid1()) + 'jd_attachment.pdf'
-                        #wget.download(download_url, out=filePath)
                         response = urllib.request.urlopen(download_url)
                         with open(filePath,'wb') as output:
                           output.write(response.read())
