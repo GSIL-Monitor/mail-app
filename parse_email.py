@@ -100,22 +100,23 @@ class Mail(object):
                 contenttype = part.get_content_type()
                 name = part.get_param("name")
                 filePath = None
-                if name: # 有附件的情况, 优先找附件
+                if name:
                     fh = email.header.Header(name)
                     fdh = email.header.decode_header(fh)
                     fname = fdh[0][0]
-                    print('附件名 before decode:', fname)
 
                     fileName = part.get_filename()
-
+                    if not bool(fileName):
+                        continue
                     try:
                         fileName = decode_header(fileName)[0][0].decode(decode_header(fileName)[0][1])
                     except:
-                        print('do not need to decode filename')
+                        print('附件' + filename + '有问题')
 
-                    print('附件名 afeter decode:', fileName)
+                    print('正在处理附件:', fileName)
                     if not fileName.endswith('.pdf'):
-                        return
+                        print('文件名称' + fileName + '不是pdf, 跳过不下载')
+                        continue
 
                     if bool(fileName):
                         filePath = os.path.join('.', 'attachments', fileName)
@@ -123,7 +124,7 @@ class Mail(object):
                     fp.write(part.get_payload(decode=True))
                     fp.close()
                 else: # 需要在正文找链接下载的情况（比如京东）
-                    print('no attachments')
+                    print('处理正文')
                     if self.send_from == 'customer_service@jd.com':
                         print('分析京东的邮件，找到发票下载地址')
                         mail_contents = self.parse_part_to_str(part) # print 邮件正文
@@ -137,16 +138,13 @@ class Mail(object):
                         with open(filePath,'wb') as output:
                           output.write(response.read())
 
-                if not bool(filePath):
-                    print("没有在正文和附件中找到要分析的内容")
-                    return
-
-                print('pdf file path is:' + filePath)
-                image = convert_from_path(filePath)
-                image[0].save('temp.png')
-                sfiles={'file': open('temp.png','rb')}
-                res=requests.post('http://180.76.188.189:8890/api/v1/invoices/invoice/email/qrcode',files=sfiles, data={'mobile': self.to} )
-                print (res.text)
+                if bool(filePath):
+                    print('pdf file path is:' + filePath)
+                    image = convert_from_path(filePath)
+                    image[0].save('temp.png')
+                    sfiles={'file': open('temp.png','rb')}
+                    res=requests.post('http://180.76.188.189:8890/api/v1/invoices/invoice/email/qrcode',files=sfiles, data={'mobile': self.to} )
+                    print (res.text)
 
     def parse(self):
         nums = self.unseen
