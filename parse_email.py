@@ -73,7 +73,12 @@ class Mail(object):
             log.info('所有邮件数量:%s' % len(self.all))
 
     def parse_header(self, msg):
-        data, charset = email.header.decode_header(msg['subject'])[0]
+        data = None
+        charset = None
+        try:
+            data, charset = email.header.decode_header(msg['subject'])[0]
+        except:
+            pass
         charset = charset or 'utf8'
         self.charset = charset
         log.debug("header编码是" + charset)

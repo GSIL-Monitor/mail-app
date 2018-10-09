@@ -3456,3 +3456,32 @@
  Delayed to Tuesday September 20th
 2018-09-24 18:03:12,123 | imap_monitor | INFO | processing email 1482 - [Creative Applications of Deep Learning with TensorFlow] Last Session
  Delayed to Tuesday September 20th
+2018-09-28 12:58:53,265 | parser_email | INFO | 邮箱基本信息, user: invoice@rrs.com, passowrd:'Haier@2018, host: imap.exmail.qq.com, floder:&UXZO1mWHTvZZOQ-/&kK5O9o9sefs- 
+2018-09-28 12:59:43,284 | parser_email | INFO | 邮箱基本信息, user: invoice@rrs.com, passowrd:Haier@2018, host: imap.exmail.qq.com, floder:&UXZO1mWHTvZZOQ-/&kK5O9o9sefs- 
+2018-09-28 13:02:25,536 | parser_email | INFO | 邮箱基本信息, user: invoice@rrs.com, passowrd:Haier@2018, host: imap.exmail.qq.com, floder:&UXZO1mWHTvZZOQ-/&kK5O9o9sefs- 
+2018-09-28 13:05:54,284 | parser_email | INFO | 邮箱基本信息, user: invoice@rrs.com, passowrd:Haier@2018, host: imap.exmail.qq.com, floder:&UXZO1mWHTvZZOQ-/&kK5O9o9sefs- 
+2018-09-28 13:06:02,588 | parser_email | INFO | 登录成功
+2018-09-28 13:09:16,101 | parser_email | INFO | 邮箱基本信息, user: invoice@rrs.com, passowrd:Haier@2018, host: imap.exmail.qq.com, floder:&UXZO1mWHTvZZOQ-/&kK5O9o9sefs- 
+2018-09-28 13:09:25,314 | parser_email | INFO | 登录成功
+2018-09-28 13:09:26,650 | parser_email | INFO | 未读邮件数量:2
+2018-09-28 13:21:32,662 | parser_email | INFO | 邮箱基本信息, user: invoice@rrs.com, passowrd:Haier@2018, host: imap.exmail.qq.com, floder:&UXZO1mWHTvZZOQ-/&kK5O9o9sefs- 
+2018-09-28 13:21:55,368 | parser_email | INFO | 登录成功
+2018-09-28 13:21:57,953 | parser_email | INFO | 未读邮件数量:2
+2018-09-28 13:24:40,389 | parser_email | INFO | 邮箱基本信息, user: invoice@rrs.com, passowrd:Haier@2018, host: imap.exmail.qq.com, floder:&UXZO1mWHTvZZOQ-/&kK5O9o9sefs- 
+2018-09-28 13:24:44,075 | parser_email | INFO | 登录成功
+2018-09-28 13:24:45,405 | parser_email | INFO | 未读邮件数量:2
+2018-09-28 13:31:50,516 | parser_email | INFO | 邮箱基本信息, user: invoice@rrs.com, passowrd:Haier@2018, host: imap.exmail.qq.com, floder:&UXZO1mWHTvZZOQ-/&kK5O9o9sefs- 
+2018-09-28 13:31:58,540 | parser_email | INFO | 登录成功
+2018-09-28 13:31:59,198 | parser_email | INFO | 未读邮件数量:2
+2018-09-28 14:15:56,306 | parser_email | INFO | 邮箱基本信息, user: invoice@rrs.com, passowrd:Haier@2018, host: imap.exmail.qq.com, floder:&UXZO1mWHTvZZOQ-/&kK5O9o9sefs- 
+2018-09-28 14:16:03,153 | parser_email | INFO | 登录成功
+2018-09-28 14:16:03,828 | parser_email | INFO | 未读邮件数量:3
+2018-09-28 14:16:31,995 | parser_email | INFO | Message 38
+2018-09-28 14:16:31,998 | parser_email | ERROR | Message b'38' 解析错误:expected string or bytes-like object
+2018-09-28 14:16:32,896 | parser_email | INFO | Message 43
+2018-09-28 14:16:32,909 | parser_email | DEBUG | header编码是utf-8
+2018-09-28 14:16:32,948 | parser_email | INFO | 忽略无关邮件
+2018-09-28 14:16:39,537 | parser_email | INFO | Message 44
+2018-09-28 14:16:39,538 | parser_email | DEBUG | header编码是windows-1252
+2018-09-28 14:16:39,552 | parser_email | INFO | 忽略无关邮件
+2018-09-28 14:16:40,618 | parser_email | INFO | 未读邮件数量:1
